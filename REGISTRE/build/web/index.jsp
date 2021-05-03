@@ -4,35 +4,35 @@
     Author     : JORD DJR
 --%>
 
+<%@page import="com.dao.DAO"%>
+<%@page import="com.bean.personne"%>
+<%@page import="java.util.Set"%>
+<%@page import="java.util.ArrayList"%>
+<%@page import="java.util.List"%>
+<%@page import="com.fonction.implement.PersonneDAO"%>
+<%@page import="com.fonction.implement.PersonneDAO"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@page import="java.sql.*" %>
 <%@page import="com.connection.Maconnection" %>
 
 <%
     
-    try{
+    
     if (request.getParameter("submit")!=null)
     {
-        String nom      = request.getParameter("fname");
-        String id       = request.getParameter("fid");
-        String fonction = request.getParameter("ffonction");
-        PreparedStatement pst;
-       
-        Connection conn = Maconnection.Connect();
-        pst = conn.prepareStatement("Insert into personne values(?,?)");
-        pst.setString(1, id);
-        pst.setString(2, nom);
-        pst.executeUpdate();
-        pst = conn.prepareStatement("Insert into fonction values(?,?) ");
-        pst.setString(1, fonction);
-        pst.setString(2, id);
-        pst.executeUpdate();
-        conn.close();
-    } }
-    catch(Exception e)
-            {
-            out.print(e);
-            }
+        DAO<personne> personnedao = new PersonneDAO(Maconnection.Connect());
+        personne personne0 = new personne(Integer.valueOf(request.getParameter("fid")),request.getParameter("fname"),request.getParameter("ffonction"));
+        if (personnedao.create(personne0)){%>
+        
+        <script>
+           window.location.assign("index.jsp");
+           alert("personne ajoutee avec succes");
+           
+        </script>
+        
+<%
+    } 
+    }
 %>
 
 
@@ -79,40 +79,28 @@
             <th></th>   
           </tr>
           <%
-          try{
-          
-          Connection conn = Maconnection.Connect();
-          String query = "select personne.NOMP as NOM , personne.IDP as ID, fonction.NomF as FONCTION from personne inner join fonction on personne.IDP = fonction.IDP order by fonction.IDP asc ";
-           PreparedStatement state = conn.prepareStatement(query);
-          ResultSet result = state.executeQuery();
-          
-            while(result.next()){
-                String id = result.getString("ID");
-              %>
-          
-          
          
+          DAO<personne> personnedao = new PersonneDAO(Maconnection.Connect());
+        Set<personne> listePersonne = personnedao.findAll();        
+          for( personne personne0 : listePersonne ){
+              %>
+        
           
           <tr>
-              <td><%=result.getString("NOM")%></td>
-            <td><%=result.getString("ID")%></td>
-            <td><%=result.getString("FONCTION")%></td>
+              <td><%= personne0.getNOMPersonne()%></td>
+            <td><%=personne0.getIDPersonne()%></td>
+            <td><%= personne0.getNOMFonction()%></td>
             <td>
-                [<a href="editpersonne.jsp?id=<%=id%>">MODIFIER</a>]
+                [<a href="editpersonne.jsp?id=<%=personne0.getIDPersonne()%>">MODIFIER</a>]
                                 &nbsp;
-                [<a href="deletepersonne.jsp?id=<%=id%>">SUPPRIMER</a>]
+                [<a href="deletepersonne.jsp?id=<%=personne0.getIDPersonne()%>">SUPPRIMER</a>]
             </td>
           </tr> 
                   
           <%
               
-                    } conn.close();}
-          
-            catch(Exception e)
-            {
-            out.print(e);
-            }
-             
+                    } 
+
           %>
         </table>
                 

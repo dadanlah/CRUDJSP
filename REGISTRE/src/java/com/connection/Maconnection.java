@@ -22,13 +22,13 @@ public class Maconnection {
                Class.forName(pilote);
                conn = DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:XE","BIGA","biga*ranx");
               
-               return conn;
+               
            } catch (ClassNotFoundException ex) {
                
                Logger.getLogger(Maconnection.class.getName()).log(Level.SEVERE, null, ex);
                return null;
            }
-      
+      return conn;
     }
     
 }

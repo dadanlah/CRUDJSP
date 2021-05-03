@@ -60,7 +60,7 @@ public final class addpersonne_jsp extends org.apache.jasper.runtime.HttpJspBase
       out.write("                <input type=\"text\" name=\"nom\" required>\n");
       out.write("                <br>\n");
       out.write("                            ID : <br>\n");
-      out.write("                <input type=\"text\" name=\"id\" >\n");
+      out.write("                <input type=\"text\" name=\"id\" required>\n");
       out.write("                <br><br>\n");
       out.write("                <input type=\"submit\" value=\"AJOUTER\">\n");
       out.write("\n");

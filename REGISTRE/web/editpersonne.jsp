@@ -4,7 +4,10 @@
     Author     : JORD DJR
 --%>
 
-    <%@page contentType="text/html" pageEncoding="UTF-8"%>
+    <%@page import="com.dao.DAO"%>
+<%@page import="com.bean.personne"%>
+<%@page import="com.fonction.implement.PersonneDAO"%>
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
         <%@page import="java.sql.*" %>
             <%@page import="com.connection.Maconnection" %>
 
@@ -23,37 +26,18 @@
                 <body>
 
                     <%
-    
- //  try{
+
     if (request.getParameter("submit")!=null)
     {
-      
-      String fonction = request.getParameter("ffonction");
-      String iddd = request.getParameter("id");
-          Connection connn = Maconnection.Connect();
-          String uquery = "UPDATE fonction set NOMF=?"+" where IDP=? ";
-           PreparedStatement states = connn.prepareStatement(uquery);
-           states.setString(1,fonction);
-           states.setString(2, iddd);
-           states.executeQuery();
-          uquery = "UPDATE personne set NOMP=?"+" where IDP=? ";
-          fonction = request.getParameter("fname");
-           states = connn.prepareStatement(uquery);
-           states.setString(1,fonction);
-           states.setString(2, iddd);
-           states.executeQuery();
-          uquery = "UPDATE fonction set IDP=?"+" where IDP=? ";
-          fonction = request.getParameter("fid");
-           states = connn.prepareStatement(uquery);
-           states.setString(1,fonction);
-           states.setString(2, iddd);
-           states.executeQuery();
- 
+        DAO<personne> personnedao = new PersonneDAO(Maconnection.Connect());
+        personne personne0 = new personne(Integer.valueOf(request.getParameter("fid")),request.getParameter("fname"),request.getParameter("ffonction"));
+        if (personnedao.update(personne0)){
      %>
                         <script>
-                            alert("Mise a jour avec succes avec succes");
+                            alert("Mise a jour effectuer avec succes");
                         </script>
-                        <%    
+                        <%   
+        }
      }
     %>
 
@@ -61,26 +45,18 @@
 
                             <div class="container">
                                 <%
-        try{
-      Maconnection.Connect();
-      String idd = request.getParameter("id");
-          Connection conn = Maconnection.Connect();
-          String query = "select personne.NOMP as NOM , personne.IDP as ID, fonction.NomF as FONCTION from personne inner join fonction on personne.IDP = fonction.IDP where personne.IDP=?";
-           PreparedStatement state = conn.prepareStatement(query);
-           
-           state.setString(1, idd);
-           ResultSet result = state.executeQuery();
-          
-          
-            while(result.next()){
+
+        DAO<personne> personnedao = new PersonneDAO(Maconnection.Connect());
+        personne personne0 = personnedao.find(Integer.valueOf(request.getParameter("id")));
+      
     %>
 
                                     <form action="#" method="POST">
                                         <label>NOM</label>
-                                        <input type="text" id="fname" name="fname" placeholder="votre nom.." value="<%= result.getString(" NOM ") %>" required>
+                                        <input type="text" id="fname" name="fname" placeholder="votre nom.." value="<%= personne0.getNOMPersonne() %>" required>
 
                                         <label>ID</label>
-                                        <input type="text" id="fid" name="fid" placeholder="votre identifiant.." value="<%= result.getString(" ID ") %>" required>
+                                        <input type="text" id="fid" name="fid" placeholder="votre identifiant.." value="<%= personne0.getIDPersonne()%>" required>
 
                                         <label>Fonction</label>
                                         <select id="ffonction" name="ffonction">
@@ -96,12 +72,7 @@
                                     </form>
 
                                     <%
-                    }conn.close();}
-                   
-    catch(Exception e)
-            {
-            out.print(e);
-            }
+
           %>
                             </div>
 
